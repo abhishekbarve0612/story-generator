@@ -1,24 +1,23 @@
 import { Form } from "@abhishekbarve/components";
-import { useState } from "react";
 import ConfigAccordion from "./ConfigAccordion";
 import MessageInput from "./MessageInput";
 import DirectionInstructions from "./DirectionInstructions";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import {
+  setCharacterText,
+  setLore,
+  setScenario,
+  setMessage,
+  setSelectedCharacter,
+} from "@/app/reducerSlices/configSlice";
+import type { RootState } from "@/app/store";
+
+const characters = ["Nora", "John", "Jane", "Jim", "Jill"];
 
 function ConfigPanel() {
-  const [characters, setCharacters] = useState([
-    "Nora",
-    "John",
-    "Jane",
-    "Jim",
-    "Jill",
-  ]);
-  const [characterText, setCharacterText] = useState("");
-  const [lore, setLore] = useState("");
-  const [scenario, setScenario] = useState("");
-  const [message, setMessage] = useState("");
-  const [selectedCharacter, setSelectedCharacter] = useState("the character");
-  const [direction, setDirection] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const dispatch = useAppDispatch();
+  const { characterText, lore, scenario, message, selectedCharacter } =
+    useAppSelector((state: RootState) => state.config);
 
   return (
     <div className="w-full p-6 space-y-8">
@@ -31,9 +30,9 @@ function ConfigPanel() {
           characterText={characterText}
           lore={lore}
           scenario={scenario}
-          onCharacterChange={setCharacterText}
-          onLoreChange={setLore}
-          onScenarioChange={setScenario}
+          onCharacterChange={(value) => dispatch(setCharacterText(value))}
+          onLoreChange={(value) => dispatch(setLore(value))}
+          onScenarioChange={(value) => dispatch(setScenario(value))}
         />
       </Form>
 
@@ -41,16 +40,11 @@ function ConfigPanel() {
         message={message}
         characters={characters}
         selectedCharacter={selectedCharacter}
-        onMessageChange={setMessage}
-        onCharacterSelect={setSelectedCharacter}
+        onMessageChange={(value) => dispatch(setMessage(value))}
+        onCharacterSelect={(value) => dispatch(setSelectedCharacter(value))}
       />
 
-      <DirectionInstructions
-        direction={direction}
-        instructions={instructions}
-        onDirectionChange={setDirection}
-        onInstructionsChange={setInstructions}
-      />
+      <DirectionInstructions />
     </div>
   );
 }

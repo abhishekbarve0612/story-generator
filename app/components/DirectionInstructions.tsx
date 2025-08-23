@@ -1,19 +1,18 @@
 import { Textarea } from "@abhishekbarve/components";
 import WritingHelpers from "./WritingHelpers";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import {
+  setDirection,
+  setInstructions,
+} from "@/app/reducerSlices/directionInstructionSlice";
+import type { RootState } from "@/app/store";
 
-interface DirectionInstructionsProps {
-  direction: string;
-  instructions: string;
-  onDirectionChange: (value: string) => void;
-  onInstructionsChange: (value: string) => void;
-}
+function DirectionInstructions() {
+  const dispatch = useAppDispatch();
+  const { direction, instructions } = useAppSelector(
+    (state: RootState) => state.directionInstruction
+  );
 
-function DirectionInstructions({
-  direction,
-  instructions,
-  onDirectionChange,
-  onInstructionsChange,
-}: DirectionInstructionsProps) {
   return (
     <div className="mt-8 pt-6 border-t border-gray-200">
       <div className="space-y-4">
@@ -34,26 +33,27 @@ function DirectionInstructions({
                 Story Direction
               </label>
               <p className="text-xs text-gray-500 mb-2">
-                What happens next? Describe plot developments, events, or story progression.
+                What happens next? Describe plot developments, events, or story
+                progression.
               </p>
             </div>
-            
+
             <Textarea
               name="direction"
               value={direction}
-              onValueChange={onDirectionChange}
+              onValueChange={(value) => dispatch(setDirection(value))}
             >
               <Textarea.Field
                 className="w-full min-h-[100px] resize-none"
                 placeholder="The protagonist discovers a hidden door behind the bookshelf..."
               />
             </Textarea>
-            
+
             <WritingHelpers
               textContent={direction}
-              onGenerate={onDirectionChange}
-              onImprove={onDirectionChange}
-              onClear={() => onDirectionChange("")}
+              onGenerate={(value) => dispatch(setDirection(value))}
+              onImprove={(value) => dispatch(setDirection(value))}
+              onClear={() => dispatch(setDirection(""))}
             />
           </div>
 
@@ -64,26 +64,27 @@ function DirectionInstructions({
                 Writing Instructions
               </label>
               <p className="text-xs text-gray-500 mb-2">
-                How should it be written? Tone, style, focus points, or specific requirements.
+                How should it be written? Tone, style, focus points, or specific
+                requirements.
               </p>
             </div>
-            
+
             <Textarea
               name="instructions"
               value={instructions}
-              onValueChange={onInstructionsChange}
+              onValueChange={(value) => dispatch(setInstructions(value))}
             >
               <Textarea.Field
                 className="w-full min-h-[100px] resize-none"
                 placeholder="Write in first person, focus on suspense, include sensory details..."
               />
             </Textarea>
-            
+
             <WritingHelpers
               textContent={instructions}
-              onGenerate={onInstructionsChange}
-              onImprove={onInstructionsChange}
-              onClear={() => onInstructionsChange("")}
+              onGenerate={(value) => dispatch(setInstructions(value))}
+              onImprove={(value) => dispatch(setInstructions(value))}
+              onClear={() => dispatch(setInstructions(""))}
             />
           </div>
         </div>
