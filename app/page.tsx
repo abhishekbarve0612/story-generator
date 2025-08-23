@@ -6,7 +6,7 @@ import ConfigPanel from "./components/ConfigPanel";
 export default function Home() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="ui-theme">
-      <Main className="flex items-center h-screen divide-x divide-gray-900">
+      <Main className="flex items-center min-h-screen h-full divide-x divide-gray-900">
         <div className="flex flex-col items-center justify-center w-1/2">
           <ConfigPanel />
         </div>
