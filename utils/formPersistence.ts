@@ -1,5 +1,6 @@
 const FORM_CACHE_KEY = "story-generator-forms";
 const LORE_CACHE_KEY = "story-generator-lore";
+const SCENARIO_CACHE_KEY = "story-generator-scenario";
 const MESSAGE_CACHE_KEY = "story-generator-message";
 const CHARACTER_CACHE_KEY = "story-generator-character";
 const DIRECTION_CACHE_KEY = "story-generator-direction";
@@ -14,13 +15,22 @@ interface FormData {
 
 const getCacheKey = (formType: string): string => {
   switch (formType) {
-    case 'character': return CHARACTER_CACHE_KEY;
-    case 'lore': return LORE_CACHE_KEY;
-    case 'message': return MESSAGE_CACHE_KEY;
-    case 'direction': return DIRECTION_CACHE_KEY;
-    case 'instruction': return INSTRUCTION_CACHE_KEY;
-    case 'story-progression': return STORY_PROGRESSION_CACHE_KEY;
-    default: return FORM_CACHE_KEY;
+    case "character":
+      return CHARACTER_CACHE_KEY;
+    case "lore":
+      return LORE_CACHE_KEY;
+    case "scenario":
+      return SCENARIO_CACHE_KEY;
+    case "message":
+      return MESSAGE_CACHE_KEY;
+    case "direction":
+      return DIRECTION_CACHE_KEY;
+    case "instruction":
+      return INSTRUCTION_CACHE_KEY;
+    case "story-progression":
+      return STORY_PROGRESSION_CACHE_KEY;
+    default:
+      return FORM_CACHE_KEY;
   }
 };
 
@@ -51,9 +61,17 @@ export const loadFormData = (formType: string): string => {
 
 export const loadAllForms = (): Record<string, FormData> => {
   const allForms: Record<string, FormData> = {};
-  const formTypes = ['character', 'lore', 'message', 'direction', 'instruction', 'story-progression'];
-  
-  formTypes.forEach(formType => {
+  const formTypes = [
+    "character",
+    "lore",
+    "scenario",
+    "message",
+    "direction",
+    "instruction",
+    "story-progression",
+  ];
+
+  formTypes.forEach((formType) => {
     try {
       const cacheKey = getCacheKey(formType);
       const cached = localStorage.getItem(cacheKey);
@@ -64,7 +82,7 @@ export const loadAllForms = (): Record<string, FormData> => {
       console.warn(`Failed to load ${formType} form:`, error);
     }
   });
-  
+
   return allForms;
 };
 
@@ -83,7 +101,10 @@ export const saveCharacterId = (characterId: string) => {
     const existingIds = getCharacterIds();
     if (!existingIds.includes(characterId)) {
       existingIds.push(characterId);
-      localStorage.setItem(CHARACTER_IDS_CACHE_KEY, JSON.stringify(existingIds));
+      localStorage.setItem(
+        CHARACTER_IDS_CACHE_KEY,
+        JSON.stringify(existingIds)
+      );
     }
   } catch (error) {
     console.warn("Failed to save character ID:", error);
@@ -103,7 +124,7 @@ export const getCharacterIds = (): string[] => {
 export const removeCharacterId = (characterId: string) => {
   try {
     const existingIds = getCharacterIds();
-    const filteredIds = existingIds.filter(id => id !== characterId);
+    const filteredIds = existingIds.filter((id) => id !== characterId);
     localStorage.setItem(CHARACTER_IDS_CACHE_KEY, JSON.stringify(filteredIds));
   } catch (error) {
     console.warn("Failed to remove character ID:", error);
@@ -115,14 +136,15 @@ export const clearAllForms = () => {
     const cacheKeys = [
       CHARACTER_CACHE_KEY,
       LORE_CACHE_KEY,
+      SCENARIO_CACHE_KEY,
       MESSAGE_CACHE_KEY,
       DIRECTION_CACHE_KEY,
       INSTRUCTION_CACHE_KEY,
       STORY_PROGRESSION_CACHE_KEY,
-      CHARACTER_IDS_CACHE_KEY
+      CHARACTER_IDS_CACHE_KEY,
     ];
-    
-    cacheKeys.forEach(key => localStorage.removeItem(key));
+
+    cacheKeys.forEach((key) => localStorage.removeItem(key));
   } catch (error) {
     console.warn("Failed to clear all forms:", error);
   }

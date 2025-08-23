@@ -1,6 +1,8 @@
 import { Accordion, Textarea } from "@abhishekbarve/components";
 import WritingHelpers from "./WritingHelpers";
 import CharacterGenerator from "./CharacterGenerator";
+import LoreGenerator from "./LoreGenerator";
+import ScenarioGenerator from "./ScenarioGenerator";
 
 interface ConfigAccordionProps {
   characterText: string;
@@ -47,17 +49,7 @@ function ConfigAccordion({
           </div>
         </Accordion.Trigger>
         <Accordion.Content className="space-y-3">
-          <Textarea name="lore" value={lore} onValueChange={onLoreChange}>
-            <Textarea.Field
-              className="w-full min-h-[120px] resize-none"
-              placeholder="In a Victorian-era city where magic is hidden beneath the surface..."
-            />
-          </Textarea>
-          <WritingHelpers
-            textContent={lore}
-            onGenerate={onLoreChange}
-            onClear={() => onLoreChange("")}
-          />
+          <LoreGenerator />
         </Accordion.Content>
       </Accordion.Item>
 
@@ -71,21 +63,7 @@ function ConfigAccordion({
           </div>
         </Accordion.Trigger>
         <Accordion.Content className="space-y-3">
-          <Textarea
-            name="scenario"
-            value={scenario}
-            onValueChange={onScenarioChange}
-          >
-            <Textarea.Field
-              className="w-full min-h-[120px] resize-none"
-              placeholder="The fog was thick that evening when a mysterious letter arrived..."
-            />
-          </Textarea>
-          <WritingHelpers
-            textContent={scenario}
-            onGenerate={onScenarioChange}
-            onClear={() => onScenarioChange("")}
-          />
+          <ScenarioGenerator />
         </Accordion.Content>
       </Accordion.Item>
     </Accordion>

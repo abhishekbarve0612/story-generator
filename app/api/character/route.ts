@@ -1,4 +1,5 @@
 import { generateCharacter } from "@/utils/llm";
+import { logLLMResponse } from "@/utils/responseLogger";
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
@@ -91,6 +92,12 @@ export async function POST(request: NextRequest) {
         id: characterId,
         name: extractedName,
       });
+
+      try {
+        await logLLMResponse("character", { description }, result);
+      } catch (logError) {
+        console.error("Error logging character response:", logError);
+      }
 
       // Return the character data along with the text
       return NextResponse.json({

@@ -4,16 +4,18 @@ import type { Character } from "@/utils/types";
 
 export interface LLMResponsesState {
   characters: Record<string, Character>;
-  scenarios: Record<string, string>;
-  directions: Record<string, string>;
-  instructions: Record<string, string>;
+  lore: string;
+  scenarios: string;
+  directions: string;
+  instructions: string;
 }
 
 const initialState: LLMResponsesState = {
   characters: {},
-  scenarios: {},
-  directions: {},
-  instructions: {},
+  lore: "",
+  scenarios: "",
+  directions: "",
+  instructions: "",
 };
 
 export const llmResponsesSlice = createSlice({
@@ -29,13 +31,16 @@ export const llmResponsesSlice = createSlice({
     addCharacter: (state, action: PayloadAction<Character>) => {
       state.characters[action.payload.id] = action.payload;
     },
-    setScenarios: (state, action: PayloadAction<Record<string, string>>) => {
+    setLore: (state, action: PayloadAction<string>) => {
+      state.lore = action.payload;
+    },
+    setScenario: (state, action: PayloadAction<string>) => {
       state.scenarios = action.payload;
     },
-    setDirections: (state, action: PayloadAction<Record<string, string>>) => {
+    setDirections: (state, action: PayloadAction<string>) => {
       state.directions = action.payload;
     },
-    setInstructions: (state, action: PayloadAction<Record<string, string>>) => {
+    setInstructions: (state, action: PayloadAction<string>) => {
       state.instructions = action.payload;
     },
   },
@@ -44,7 +49,8 @@ export const llmResponsesSlice = createSlice({
 export const {
   setCharacters,
   addCharacter,
-  setScenarios,
+  setLore,
+  setScenario,
   setDirections,
   setInstructions,
 } = llmResponsesSlice.actions;

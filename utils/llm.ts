@@ -8,6 +8,7 @@ import {
   STORY_PROGRESSION_PROMPT,
   WRITING_INSTRUCTIONS_PROMPT,
 } from "./prompts";
+import { getCharacterProfile, getCharacterNames } from "./characterData";
 
 export async function generateText(messages: AIMessage[]): Promise<AIResponse> {
   const response = await openai.chat.completions.create({
@@ -85,19 +86,11 @@ export async function generateInstructions(
   return generateText(messages);
 }
 
-const mockSendersProfile = (sender: string): string => {
-  return `
-  ${sender} is a ${Math.floor(Math.random() * 100)} year old ${
-    Math.random() > 0.5 ? "man" : "woman"
-  } who works as a ${Math.random() > 0.5 ? "software engineer" : "doctor"}.
-  `;
-};
-
 export async function generateMessage(
   message: string,
   sender: string = "Narrator"
 ): Promise<AIResponse> {
-  const sendersProfile = mockSendersProfile(sender);
+  const sendersProfile = await getCharacterProfile(sender);
   const prompt = `
   Sender's profile: ${sendersProfile}
   Message: ${message}
@@ -115,9 +108,13 @@ export async function generateStoryProgression(
   summary: string,
   sender: string = "Narrator"
 ): Promise<AIResponse> {
+  const characters = await getCharacterNames();
+  const senderProfile = await getCharacterProfile(sender);
+  
   const prompt = `
-  Sender's name: ${sender}
+  Sender's profile: ${senderProfile}
   Summary: ${summary}
+  Characters in the story: ${characters.join(", ")}
   `;
 
   const messages: AIMessage[] = [
