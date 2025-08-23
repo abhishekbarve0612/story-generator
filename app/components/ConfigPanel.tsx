@@ -26,7 +26,7 @@ function ConfigPanel() {
   const [instructions, setInstructions] = useState("");
 
   return (
-    <div className="w-full h-full p-6 space-y-8">
+    <div className="w-full p-6 space-y-8">
       <h1 className="text-2xl font-semibold text-gray-900 mb-8">
         Story Configuration
       </h1>
