@@ -1,5 +1,5 @@
 import openai, { MODEL_NAME } from "./ai";
-import { AIMessage, AIResponse } from "@/types";
+import { AIMessage, AIResponse } from "@/utils/types";
 import {
   CHARACTER_GENERATION_PROMPT,
   MESSAGE_IMPROVEMENT_PROMPT,
@@ -13,7 +13,6 @@ export async function generateText(messages: AIMessage[]): Promise<AIResponse> {
   const response = await openai.chat.completions.create({
     model: MODEL_NAME,
     messages,
-    temperature: 0.7,
   });
 
   return {

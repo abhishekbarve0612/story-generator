@@ -1,4 +1,3 @@
-import { Form } from "@abhishekbarve/components";
 import ConfigAccordion from "./ConfigAccordion";
 import MessageInput from "./MessageInput";
 import DirectionInstructions from "./DirectionInstructions";
@@ -12,8 +11,6 @@ import {
 } from "@/app/reducerSlices/configSlice";
 import type { RootState } from "@/app/store";
 
-const characters = ["Nora", "John", "Jane", "Jim", "Jill"];
-
 function ConfigPanel() {
   const dispatch = useAppDispatch();
   const { characterText, lore, scenario, message, selectedCharacter } =
@@ -25,20 +22,17 @@ function ConfigPanel() {
         Story Configuration
       </h1>
 
-      <Form>
-        <ConfigAccordion
-          characterText={characterText}
-          lore={lore}
-          scenario={scenario}
-          onCharacterChange={(value) => dispatch(setCharacterText(value))}
-          onLoreChange={(value) => dispatch(setLore(value))}
-          onScenarioChange={(value) => dispatch(setScenario(value))}
-        />
-      </Form>
+      <ConfigAccordion
+        characterText={characterText}
+        lore={lore}
+        scenario={scenario}
+        onCharacterChange={(value) => dispatch(setCharacterText(value))}
+        onLoreChange={(value) => dispatch(setLore(value))}
+        onScenarioChange={(value) => dispatch(setScenario(value))}
+      />
 
       <MessageInput
         message={message}
-        characters={characters}
         selectedCharacter={selectedCharacter}
         onMessageChange={(value) => dispatch(setMessage(value))}
         onCharacterSelect={(value) => dispatch(setSelectedCharacter(value))}

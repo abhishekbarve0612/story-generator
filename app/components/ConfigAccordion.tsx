@@ -1,5 +1,6 @@
 import { Accordion, Textarea } from "@abhishekbarve/components";
 import WritingHelpers from "./WritingHelpers";
+import CharacterGenerator from "./CharacterGenerator";
 
 interface ConfigAccordionProps {
   characterText: string;
@@ -25,27 +26,13 @@ function ConfigAccordion({
           <div>
             <div className="font-medium">Character</div>
             <div className="text-sm text-gray-600">
-              Describe your next character - their personality, background, and key traits.
+              Describe your next character - their personality, background, and
+              key traits.
             </div>
           </div>
         </Accordion.Trigger>
         <Accordion.Content className="space-y-3">
-          <Textarea
-            name="character"
-            value={characterText}
-            onValueChange={onCharacterChange}
-          >
-            <Textarea.Field
-              className="w-full min-h-[120px] resize-none"
-              placeholder="A curious young detective with a sharp wit and mysterious past..."
-            />
-          </Textarea>
-          <WritingHelpers
-            textContent={characterText}
-            onGenerate={onCharacterChange}
-            onImprove={onCharacterChange}
-            onClear={() => onCharacterChange("")}
-          />
+          <CharacterGenerator />
         </Accordion.Content>
       </Accordion.Item>
 
@@ -54,16 +41,13 @@ function ConfigAccordion({
           <div>
             <div className="font-medium">Lore & Plot</div>
             <div className="text-sm text-gray-600">
-              Set the world and story context - the setting, background lore, and plot elements.
+              Set the world and story context - the setting, background lore,
+              and plot elements.
             </div>
           </div>
         </Accordion.Trigger>
         <Accordion.Content className="space-y-3">
-          <Textarea
-            name="lore"
-            value={lore}
-            onValueChange={onLoreChange}
-          >
+          <Textarea name="lore" value={lore} onValueChange={onLoreChange}>
             <Textarea.Field
               className="w-full min-h-[120px] resize-none"
               placeholder="In a Victorian-era city where magic is hidden beneath the surface..."
@@ -72,7 +56,6 @@ function ConfigAccordion({
           <WritingHelpers
             textContent={lore}
             onGenerate={onLoreChange}
-            onImprove={onLoreChange}
             onClear={() => onLoreChange("")}
           />
         </Accordion.Content>
@@ -101,7 +84,6 @@ function ConfigAccordion({
           <WritingHelpers
             textContent={scenario}
             onGenerate={onScenarioChange}
-            onImprove={onScenarioChange}
             onClear={() => onScenarioChange("")}
           />
         </Accordion.Content>
