@@ -7,7 +7,7 @@ const DIRECTION_CACHE_KEY = "story-generator-direction";
 const INSTRUCTION_CACHE_KEY = "story-generator-instruction";
 const STORY_PROGRESSION_CACHE_KEY = "story-generator-story-progression";
 const CHARACTER_IDS_CACHE_KEY = "story-generator-character-ids";
-
+const SUMMARY_CACHE_KEY = "story-generator-summary";
 interface FormData {
   content: string;
   timestamp: number;
@@ -29,6 +29,8 @@ const getCacheKey = (formType: string): string => {
       return INSTRUCTION_CACHE_KEY;
     case "story-progression":
       return STORY_PROGRESSION_CACHE_KEY;
+    case "summary":
+      return SUMMARY_CACHE_KEY;
     default:
       return FORM_CACHE_KEY;
   }
@@ -69,6 +71,7 @@ export const loadAllForms = (): Record<string, FormData> => {
     "direction",
     "instruction",
     "story-progression",
+    "summary",
   ];
 
   formTypes.forEach((formType) => {
@@ -142,6 +145,7 @@ export const clearAllForms = () => {
       INSTRUCTION_CACHE_KEY,
       STORY_PROGRESSION_CACHE_KEY,
       CHARACTER_IDS_CACHE_KEY,
+      SUMMARY_CACHE_KEY,
     ];
 
     cacheKeys.forEach((key) => localStorage.removeItem(key));

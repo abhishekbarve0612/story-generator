@@ -11,6 +11,7 @@ const CHARACTERS_FILE = path.join(process.cwd(), "data", "characters.json");
 function extractCharacterName(generatedText: string): string {
   // Look for common patterns like "Name: John", "Character: Sarah", etc.
   const namePatterns = [
+    /Name:\s*<([^>]+)>/i, // Priority pattern: Name: <....>
     /Name:\s*([^\n,]+)/i,
     /Character:\s*([^\n,]+)/i,
     /^([A-Z][a-zA-Z\s]+)(?:\s*[-–—]|\s*:|\s*is|\s*was)/m,

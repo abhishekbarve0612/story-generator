@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { getCharacterIds } from "../../utils/formPersistence";
 import { useAppSelector } from "../hooks";
 import { RootState } from "../store";
+import StoryProgressionButton from "./StoryProgressionButton";
+import MessageGenerator from "./MessageGenerator";
 
 interface MessageInputProps {
   message: string;
@@ -96,29 +98,7 @@ function MessageInput({
             continue the story.
           </p>
         </div>
-
-        <Textarea
-          name="message"
-          value={message}
-          onValueChange={onMessageChange}
-        >
-          <Textarea.Field
-            className="w-full min-h-[100px] resize-none"
-            placeholder="Type your message here..."
-          />
-        </Textarea>
-
-        <div className="flex justify-end gap-2">
-          <WritingHelpers
-            textContent={message}
-            onGenerate={onMessageChange}
-            onClear={() => onMessageChange("")}
-          />
-          <Button className="min-w-[120px]" disabled={!message.trim()}>
-            <MdSend className="w-4 h-4 mr-2" />
-            Send Message
-          </Button>
-        </div>
+        <MessageGenerator />
       </div>
     </div>
   );

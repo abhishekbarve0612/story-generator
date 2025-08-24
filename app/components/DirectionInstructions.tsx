@@ -6,6 +6,8 @@ import {
   setInstructions,
 } from "@/app/reducerSlices/directionInstructionSlice";
 import type { RootState } from "@/app/store";
+import InstructionGenerator from "./InstructionGenerator";
+import DirectionGenerator from "./DirectionGenerator";
 
 function DirectionInstructions() {
   const dispatch = useAppDispatch();
@@ -27,66 +29,10 @@ function DirectionInstructions() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Direction Textarea */}
-          <div className="space-y-3">
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">
-                Story Direction
-              </label>
-              <p className="text-xs text-gray-500 mb-2">
-                What happens next? Describe plot developments, events, or story
-                progression.
-              </p>
-            </div>
-
-            <Textarea
-              name="direction"
-              value={direction}
-              onValueChange={(value) => dispatch(setDirection(value))}
-            >
-              <Textarea.Field
-                className="w-full min-h-[100px] resize-none"
-                placeholder="The protagonist discovers a hidden door behind the bookshelf..."
-              />
-            </Textarea>
-
-            <WritingHelpers
-              textContent={direction}
-              onGenerate={(value) => dispatch(setDirection(value))}
-              onImprove={(value) => dispatch(setDirection(value))}
-              onClear={() => dispatch(setDirection(""))}
-            />
-          </div>
+          <DirectionGenerator />
 
           {/* Instructions Textarea */}
-          <div className="space-y-3">
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 block">
-                Writing Instructions
-              </label>
-              <p className="text-xs text-gray-500 mb-2">
-                How should it be written? Tone, style, focus points, or specific
-                requirements.
-              </p>
-            </div>
-
-            <Textarea
-              name="instructions"
-              value={instructions}
-              onValueChange={(value) => dispatch(setInstructions(value))}
-            >
-              <Textarea.Field
-                className="w-full min-h-[100px] resize-none"
-                placeholder="Write in first person, focus on suspense, include sensory details..."
-              />
-            </Textarea>
-
-            <WritingHelpers
-              textContent={instructions}
-              onGenerate={(value) => dispatch(setInstructions(value))}
-              onImprove={(value) => dispatch(setInstructions(value))}
-              onClear={() => dispatch(setInstructions(""))}
-            />
-          </div>
+          <InstructionGenerator />
         </div>
       </div>
     </div>

@@ -2,11 +2,23 @@ import { promises as fs } from "fs";
 import path from "path";
 import { AIResponse } from "./types";
 
-const RESPONSES_LOG_FILE = path.join(process.cwd(), "data", "llm-responses.json");
+const RESPONSES_LOG_FILE = path.join(
+  process.cwd(),
+  "data",
+  "llm-responses.json"
+);
 
 interface LLMRequestResponse {
   id: string;
-  type: "character" | "lore" | "scenario" | "message" | "direction" | "instructions" | "story-progression";
+  type:
+    | "character"
+    | "lore"
+    | "scenario"
+    | "message"
+    | "direction"
+    | "instructions"
+    | "story-progression"
+    | "summary";
   request: {
     description?: string;
     message?: string;
@@ -43,7 +55,7 @@ export async function logLLMResponse(
 
     let existingData: ResponsesLog = {
       responses: {},
-      responseIds: []
+      responseIds: [],
     };
 
     try {
@@ -60,8 +72,11 @@ export async function logLLMResponse(
     existingData.responseIds.push(responseId);
 
     await fs.mkdir(path.dirname(RESPONSES_LOG_FILE), { recursive: true });
-    await fs.writeFile(RESPONSES_LOG_FILE, JSON.stringify(existingData, null, 2));
-    
+    await fs.writeFile(
+      RESPONSES_LOG_FILE,
+      JSON.stringify(existingData, null, 2)
+    );
+
     console.log(`LLM response logged: ${type} - ${responseId}`);
     return responseId;
   } catch (error) {
@@ -71,13 +86,15 @@ export async function logLLMResponse(
 }
 
 // Utility to get all responses by type
-export async function getResponsesByType(type: LLMRequestResponse["type"]): Promise<LLMRequestResponse[]> {
+export async function getResponsesByType(
+  type: LLMRequestResponse["type"]
+): Promise<LLMRequestResponse[]> {
   try {
     const data = await fs.readFile(RESPONSES_LOG_FILE, "utf8");
     const logData: ResponsesLog = JSON.parse(data);
-    
+
     return Object.values(logData.responses || {}).filter(
-      response => response.type === type
+      (response) => response.type === type
     );
   } catch (error) {
     console.warn(`Failed to get responses for type ${type}:`, error);
@@ -86,11 +103,13 @@ export async function getResponsesByType(type: LLMRequestResponse["type"]): Prom
 }
 
 // Utility to get response by ID
-export async function getResponseById(responseId: string): Promise<LLMRequestResponse | null> {
+export async function getResponseById(
+  responseId: string
+): Promise<LLMRequestResponse | null> {
   try {
     const data = await fs.readFile(RESPONSES_LOG_FILE, "utf8");
     const logData: ResponsesLog = JSON.parse(data);
-    
+
     return logData.responses[responseId] || null;
   } catch (error) {
     console.warn(`Failed to get response ${responseId}:`, error);
