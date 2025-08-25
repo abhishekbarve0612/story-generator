@@ -8,6 +8,8 @@ const RESPONSES_LOG_FILE = path.join(
   "llm-responses.json"
 );
 
+const RESPONSES_JSON_FILE = path.join(process.cwd(), "responses.json");
+
 interface LLMRequestResponse {
   id: string;
   type:
@@ -76,6 +78,45 @@ export async function logLLMResponse(
       RESPONSES_LOG_FILE,
       JSON.stringify(existingData, null, 2)
     );
+
+    if (type === "story-progression") {
+      try {
+        let responsesJsonData: any = {};
+
+        try {
+          const data = await fs.readFile(RESPONSES_JSON_FILE, "utf8");
+          responsesJsonData = JSON.parse(data);
+        } catch (error) {
+          responsesJsonData = { storyProgressions: [] };
+        }
+
+        if (!responsesJsonData.storyProgressions) {
+          responsesJsonData.storyProgressions = [];
+        }
+
+        responsesJsonData.storyProgressions.push({
+          id: responseId,
+          content: response.text,
+          sender: request.sender || "Narrator",
+          timestamp: Date.now(),
+          type: "assistant",
+        });
+
+        responsesJsonData.storyProgressions.sort(
+          (a: any, b: any) => a.timestamp - b.timestamp
+        );
+
+        await fs.writeFile(
+          RESPONSES_JSON_FILE,
+          JSON.stringify(responsesJsonData, null, 2)
+        );
+      } catch (error) {
+        console.error(
+          "Error storing story progression in responses.json:",
+          error
+        );
+      }
+    }
 
     console.log(`LLM response logged: ${type} - ${responseId}`);
     return responseId;
