@@ -1,12 +1,22 @@
 import { Textarea, Button, Badge } from "@abhishekbarve/components";
-import { MdSend } from "react-icons/md";
+import { MdSend, MdClose } from "react-icons/md";
 import WritingHelpers from "./WritingHelpers";
 import { useEffect, useState } from "react";
-import { getCharacterIds } from "../../utils/formPersistence";
-import { useAppSelector } from "../hooks";
+import {
+  getCharacterIds,
+  removeCharacterId,
+} from "../../utils/formPersistence";
+import { useAppSelector, useAppDispatch } from "../hooks";
 import { RootState } from "../store";
+import { deleteCharacter } from "../reducerSlices/llmResponsesSlice";
 import StoryProgressionButton from "./StoryProgressionButton";
 import MessageGenerator from "./MessageGenerator";
+
+interface Character {
+  id: string;
+  name: string;
+  isDeletable: boolean;
+}
 
 interface MessageInputProps {
   message: string;
@@ -21,42 +31,57 @@ function MessageInput({
   onMessageChange,
   onCharacterSelect,
 }: MessageInputProps) {
-  const [characters, setCharacters] = useState<string[]>(["Narrator"]);
+  const [characters, setCharacters] = useState<Array<Character>>([
+    { id: "narrator", name: "Narrator", isDeletable: false },
+  ]);
   const { characters: reduxCharacters } = useAppSelector(
     (state: RootState) => state.llmResponses
   );
+  const dispatch = useAppDispatch();
 
   // Load characters from localStorage, JSON file, and Redux store
   useEffect(() => {
     const loadCharacters = async () => {
       try {
         const characterIds = getCharacterIds();
-        const characterNamesFromStorage: string[] = [];
+        const charactersFromStorage: Array<Character> = [];
 
         if (characterIds.length > 0) {
           const response = await fetch("/api/data/characters");
           if (response.ok) {
             const data = await response.json();
-            const namesFromAPI = characterIds
-              .map((id) => data.characters?.[id]?.name)
-              .filter(Boolean);
-            characterNamesFromStorage.push(...namesFromAPI);
+            const charactersFromAPI = characterIds
+              .map((id) => ({
+                id,
+                name: data.characters?.[id]?.name,
+                isDeletable: true,
+              }))
+              .filter((char) => char.name);
+            charactersFromStorage.push(...charactersFromAPI);
           }
         }
 
-        const characterNamesFromRedux = Object.values(reduxCharacters).map(
-          (char) => char.name
+        const charactersFromRedux = Object.values(reduxCharacters).map(
+          (char) => ({
+            id: char.id,
+            name: char.name,
+            isDeletable: true,
+          })
         );
 
-        // Combine all character names, remove duplicates
-        const allCharacterNames = [
-          ...new Set([
-            ...characterNamesFromStorage,
-            ...characterNamesFromRedux,
-          ]),
+        // Combine all characters, remove duplicates by ID
+        const allCharacters = [
+          { id: "narrator", name: "Narrator", isDeletable: false },
+          ...charactersFromStorage,
+          ...charactersFromRedux.filter(
+            (reduxChar) =>
+              !charactersFromStorage.some(
+                (storageChar) => storageChar.id === reduxChar.id
+              )
+          ),
         ];
 
-        setCharacters(["Narrator", ...allCharacterNames]);
+        setCharacters(allCharacters);
       } catch (error) {
         console.error("Error loading characters:", error);
       }
@@ -64,6 +89,33 @@ function MessageInput({
 
     loadCharacters();
   }, [reduxCharacters]);
+
+  const handleDeleteCharacter = async (
+    characterId: string,
+    characterName: string
+  ) => {
+    try {
+      const response = await fetch(`/api/character?id=${characterId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        dispatch(deleteCharacter(characterId));
+
+        removeCharacterId(characterId);
+
+        if (selectedCharacter === characterName) {
+          onCharacterSelect("");
+        }
+
+        setCharacters((prev) => prev.filter((char) => char.id !== characterId));
+      } else {
+        console.error("Failed to delete character");
+      }
+    } catch (error) {
+      console.error("Error deleting character:", error);
+    }
+  };
 
   return (
     <div className="mt-8 pt-6 border-t border-gray-200">
@@ -81,13 +133,26 @@ function MessageInput({
               {characters.map((char, index) => (
                 <Badge
                   key={index}
-                  variant={selectedCharacter === char ? "default" : "secondary"}
-                  className="cursor-pointer transition-colors"
+                  variant={
+                    selectedCharacter === char.name ? "default" : "secondary"
+                  }
+                  className="cursor-pointer transition-colors flex items-center gap-1"
                   onClick={() =>
-                    onCharacterSelect(selectedCharacter === char ? "" : char)
+                    onCharacterSelect(
+                      selectedCharacter === char.name ? "" : char.name
+                    )
                   }
                 >
-                  {char}
+                  <span>{char.name}</span>
+                  {char.isDeletable && (
+                    <MdClose
+                      className="w-3 h-3 hover:text-red-500 ml-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCharacter(char.id, char.name);
+                      }}
+                    />
+                  )}
                 </Badge>
               ))}
             </div>

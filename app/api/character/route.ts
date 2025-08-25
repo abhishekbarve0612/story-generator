@@ -121,3 +121,63 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const characterId = searchParams.get('id');
+
+    if (!characterId) {
+      return NextResponse.json(
+        { error: "Character ID is required" },
+        { status: 400 }
+      );
+    }
+
+    let existingData: {
+      characters: Record<string, Character>;
+      characterIds: string[];
+    } = {
+      characters: {},
+      characterIds: [],
+    };
+
+    try {
+      const data = await fs.readFile(CHARACTERS_FILE, "utf8");
+      existingData = JSON.parse(data);
+    } catch (error) {
+      return NextResponse.json(
+        { error: "Characters file not found" },
+        { status: 404 }
+      );
+    }
+
+    // Check if character exists
+    if (!existingData.characters[characterId]) {
+      return NextResponse.json(
+        { error: "Character not found" },
+        { status: 404 }
+      );
+    }
+
+    // Remove character from both objects
+    delete existingData.characters[characterId];
+    existingData.characterIds = existingData.characterIds.filter(id => id !== characterId);
+
+    // Save updated data
+    await fs.writeFile(
+      CHARACTERS_FILE,
+      JSON.stringify(existingData, null, 2)
+    );
+
+    console.log(`Character deleted: ${characterId}`);
+
+    return NextResponse.json({ success: true, deletedId: characterId });
+  } catch (error) {
+    console.error("Error deleting character:", error);
+    return NextResponse.json(
+      { error: "Failed to delete character" },
+      { status: 500 }
+    );
+  }
+}

@@ -31,6 +31,9 @@ export const llmResponsesSlice = createSlice({
     addCharacter: (state, action: PayloadAction<Character>) => {
       state.characters[action.payload.id] = action.payload;
     },
+    deleteCharacter: (state, action: PayloadAction<string>) => {
+      delete state.characters[action.payload];
+    },
     setLore: (state, action: PayloadAction<string>) => {
       state.lore = action.payload;
     },
@@ -49,6 +52,7 @@ export const llmResponsesSlice = createSlice({
 export const {
   setCharacters,
   addCharacter,
+  deleteCharacter,
   setLore,
   setScenario,
   setDirections,
