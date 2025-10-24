@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Button, Input, Modal } from "@abhishekbarve/components";
+import { Button, Input, ControlledModal as Modal } from "@abhishekbarve/components";
 import { MdLock, MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 interface AuthModalProps {
@@ -46,15 +46,15 @@ export default function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModa
   };
 
   return (
-    <Modal open={isOpen} onOpenChange={onClose}>
-      <Modal.Content className="max-w-md">
+    <Modal id="auth-modal" open={isOpen} onClose={onClose}>
+      <div className="max-w-md">
         <Modal.Header>
           <div className="flex items-center gap-3">
             <MdLock className="w-6 h-6 text-gray-600" />
-            <Modal.Title>Authentication Required</Modal.Title>
+            <h2 className="text-lg font-bold">Authentication Required</h2>
           </div>
         </Modal.Header>
-        
+
         <Modal.Body>
           <p className="text-gray-600 mb-6 text-sm">
             Please enter your secret key to access the application.
@@ -62,15 +62,18 @@ export default function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModa
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">
-              <Input
-                type={showKey ? "text" : "password"}
-                value={secretKey}
-                onChange={(e) => setSecretKey(e.target.value)}
-                placeholder="Enter your secret key"
-                className="pr-10"
-                disabled={loading}
-                autoFocus
-              />
+              <Input>
+                <Input.Field
+                  name="secretKey"
+                  type={showKey ? "text" : "password"}
+                  value={secretKey}
+                  onChange={(e) => setSecretKey(e.target.value)}
+                  placeholder="Enter your secret key"
+                  className="pr-10"
+                  disabled={loading}
+                  autoFocus
+                />
+              </Input>
               <button
                 type="button"
                 onClick={() => setShowKey(!showKey)}
@@ -113,7 +116,7 @@ export default function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModa
             </Button>
           </div>
         </Modal.Footer>
-      </Modal.Content>
+      </div>
     </Modal>
   );
 }
