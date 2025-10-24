@@ -1,9 +1,9 @@
-import { SignJWT, jwtVerify } from 'jose';
+import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-here';
 const secret = new TextEncoder().encode(JWT_SECRET);
 
-export interface TokenPayload {
+export interface TokenPayload extends JWTPayload {
   authenticated: boolean;
   iat: number;
   exp: number;
@@ -15,7 +15,7 @@ export async function signToken(payload: { authenticated: boolean }): Promise<st
     .setIssuedAt()
     .setExpirationTime('24h') // Access token expires in 24 hours
     .sign(secret);
-  
+
   return token;
 }
 
@@ -25,14 +25,14 @@ export async function signRefreshToken(payload: { authenticated: boolean }): Pro
     .setIssuedAt()
     .setExpirationTime('7d') // Refresh token expires in 7 days
     .sign(secret);
-  
+
   return token;
 }
 
 export async function verifyToken(token: string): Promise<TokenPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, secret);
-    return payload as TokenPayload;
+    const { payload } = await jwtVerify<TokenPayload>(token, secret);
+    return payload;
   } catch (error) {
     console.error('Token verification failed:', error);
     return null;

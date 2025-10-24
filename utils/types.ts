@@ -4,8 +4,9 @@ export interface AIResponse {
 }
 
 export interface AIMessage {
-  role: "assistant" | "user" | "system";
+  role: "assistant" | "user" | "system" | "tool";
   content: string;
+  tool_call_id?: string;
 }
 
 export interface Character {

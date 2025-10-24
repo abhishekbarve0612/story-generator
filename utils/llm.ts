@@ -1,5 +1,5 @@
 import openai, { MODEL_NAME } from "./ai";
-import { AIMessage, AIResponse } from "@/utils/types";
+import type { AIMessage, AIResponse } from "@/utils/types";
 import {
   CHARACTER_GENERATION_PROMPT,
   LORE_GENERATION_PROMPT,
@@ -13,6 +13,7 @@ import {
 import { getCharacterNames, getCharacterProfile } from "./characterData";
 import { storyTools } from "./tools";
 import { handleToolCalls } from "./toolHandler";
+import type { ChatCompletionMessageParam } from "openai/resources";
 
 export async function generateText(
   messages: AIMessage[],
@@ -41,7 +42,7 @@ export async function generateText(
 
     const finalResponse = await openai.chat.completions.create({
       model: MODEL_NAME,
-      messages: messagesWithToolResponses,
+      messages: messagesWithToolResponses as ChatCompletionMessageParam[],
     });
 
     return {

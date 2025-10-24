@@ -1,17 +1,18 @@
 import { TOOL_NAMES } from "./tools";
 import { getCharacterProfile, getCharacterNames } from "./characterData";
-import { AIMessage } from "./types";
+import type { AIMessage } from "./types";
 
 // Tool execution functions
 export async function executeToolCall(toolName: string, args: any): Promise<string> {
   switch (toolName) {
     case TOOL_NAMES.GET_CHARACTER_PROFILE:
       return await getCharacterProfile(args.character_name);
-    
-    case TOOL_NAMES.GET_AVAILABLE_CHARACTERS:
+
+    case TOOL_NAMES.GET_AVAILABLE_CHARACTERS: {
       const characters = await getCharacterNames();
       return `Available characters: ${characters.join(", ")}`;
-    
+    }
+
     default:
       throw new Error(`Unknown tool: ${toolName}`);
   }
@@ -39,7 +40,7 @@ export async function handleToolCalls(
       } as AIMessage);
     } catch (error) {
       console.error(`Tool execution error for ${toolCall.function.name}:`, error);
-      
+
       // Add error response
       updatedMessages.push({
         role: "tool",
