@@ -27,7 +27,7 @@ function ConfigAccordion({
         <Accordion.Trigger className="text-left">
           <div>
             <div className="font-medium">Character</div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-foreground/40">
               Describe your next character - their personality, background, and
               key traits.
             </div>
@@ -42,7 +42,7 @@ function ConfigAccordion({
         <Accordion.Trigger className="text-left">
           <div>
             <div className="font-medium">Lore & Plot</div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-foreground/40">
               Set the world and story context - the setting, background lore,
               and plot elements.
             </div>
@@ -57,7 +57,7 @@ function ConfigAccordion({
         <Accordion.Trigger className="text-left">
           <div>
             <div className="font-medium">Scenario Beginning</div>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-foreground/40">
               Write the opening scene or situation that starts your story.
             </div>
           </div>

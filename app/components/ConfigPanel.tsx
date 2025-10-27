@@ -1,6 +1,7 @@
 import ConfigAccordion from "./ConfigAccordion";
 import MessageInput from "./MessageInput";
 import DirectionInstructions from "./DirectionInstructions";
+import DarkMode from "./DarkMode";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import {
   setCharacterText,
@@ -18,9 +19,12 @@ function ConfigPanel() {
 
   return (
     <div className="w-full p-6 space-y-8">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-8">
-        Story Configuration
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold text-foreground/80">
+          Story Configuration
+        </h1>
+        <DarkMode />
+      </div>
 
       <ConfigAccordion
         characterText={characterText}

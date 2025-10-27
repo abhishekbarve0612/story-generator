@@ -18,7 +18,7 @@ function AppContent() {
       <div className="flex items-center justify-center h-screen bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-foreground/40">Loading...</p>
         </div>
       </div>
     );
@@ -29,8 +29,8 @@ function AppContent() {
       <>
         <div className="flex items-center justify-center h-screen bg-gray-50">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">Story Generator</h1>
-            <p className="text-gray-600 mb-6">Please authenticate to access the application</p>
+            <h1 className="text-2xl font-bold text-foreground mb-4">Story Generator</h1>
+            <p className="text-muted-foreground mb-6">Please authenticate to access the application</p>
             <Button onClick={() => setShowAuthModal(true)}>
               Sign In
             </Button>
@@ -47,18 +47,18 @@ function AppContent() {
 
   return (
     <>
-      <Main className="flex h-screen divide-x divide-gray-900">
-        <div className="w-1/2 h-screen overflow-y-auto">
+      <Main className="bg-background text-foreground flex flex-col min-h-screen divide-y divide-gray-900 md:h-screen md:flex-row md:divide-y-0 md:divide-x">
+        <div className="w-full flex-1 overflow-y-auto md:w-1/2 md:h-screen">
           <ConfigPanel />
         </div>
-        <div className="w-1/2 h-screen relative">
+        <div className="relative w-full flex-1 md:w-1/2 md:h-screen">
           <Logs />
           {/* Sign Out Button */}
           <Button
             variant="outline"
             size="sm"
             onClick={signOut}
-            className="absolute top-4 right-4 z-10 bg-white/80 backdrop-blur-sm hover:bg-white"
+            className="absolute top-4 right-4 z-10 bg-foreground backdrop-blur-sm hover:bg-background transition-colors"
             title="Sign out"
           >
             <MdLogout className="w-4 h-4" />

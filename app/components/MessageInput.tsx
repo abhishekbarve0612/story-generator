@@ -121,7 +121,7 @@ function MessageInput({
     <div className="mt-8 pt-6 border-t border-gray-200">
       <div className="space-y-4">
         <div>
-          <h2 className="text-lg font-medium text-gray-900 mb-2">
+          <h2 className="text-lg font-medium text-foreground/80 mb-2">
             Send Message as
           </h2>
 
@@ -158,7 +158,7 @@ function MessageInput({
             </div>
           </div>
 
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-foreground/40 mb-4">
             Write a message from the perspective of {selectedCharacter} to
             continue the story.
           </p>

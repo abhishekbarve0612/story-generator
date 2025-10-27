@@ -74,7 +74,7 @@ function InstructionGenerator() {
         <label className="text-sm font-medium text-gray-700 mb-1 block">
           Writing Instructions
         </label>
-        <p className="text-xs text-gray-500 mb-2">
+        <p className="text-xs text-foreground/30 mb-2">
           How should it be written? Tone, style, focus points, or specific
           requirements.
         </p>

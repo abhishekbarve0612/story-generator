@@ -91,9 +91,8 @@ function Logs() {
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `story-chat-${
-          new Date().toISOString().split("T")[0]
-        }.json`;
+        link.download = `story-chat-${new Date().toISOString().split("T")[0]
+          }.json`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -123,11 +122,11 @@ function Logs() {
       <div className="flex-shrink-0 border-b border-gray-200">
         <Accordion collapsible className="w-full">
           <Accordion.Item value="context" className="border-none">
-            <Accordion.Trigger className="text-left px-4 py-3 hover:bg-gray-50">
+            <Accordion.Trigger className="text-left px-4 py-3 transition-colors">
               <div className="flex items-center justify-between w-full">
                 <div>
                   <div className="font-medium text-sm">Story Context</div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-foreground/30">
                     Summary of the conversation so far
                   </div>
                 </div>
@@ -150,14 +149,14 @@ function Logs() {
         </Accordion>
       </div>
 
-      <div className="border border-gray-200 bg-gray-50 h-[80vh] relative">
+      <div className="border border-gray-200 bg-background h-[80vh] relative">
         <ScrollArea className="h-full">
           <div className="p-4 space-y-4">
             {chat.length > 0 ? (
               chat.map((message) => (
                 <div key={message.id} className="flex flex-col space-y-1">
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full after:content-[':']">
+                    <span className="text-xs font-medium text-foreground/40 bg-gray-100 px-2 py-1 rounded-full after:content-[':']">
                       {message.speaker}
                     </span>
                   </div>
@@ -190,9 +189,8 @@ function Logs() {
             size="sm"
             variant="outline"
             onClick={copyChatToClipboard}
-            className={`p-2 bg-white/80 backdrop-blur-sm hover:bg-white transition-colors ${
-              copySuccess ? "bg-green-100 text-green-600" : ""
-            }`}
+            className={`p-2 bg-foreground backdrop-blur-sm hover:bg-background transition-colors ${copySuccess ? "bg-green-100 text-green-600" : ""
+              }`}
             title={copySuccess ? "Copied!" : "Copy chat to clipboard"}
           >
             <MdContentCopy className="w-4 h-4" />
@@ -201,7 +199,7 @@ function Logs() {
             size="sm"
             variant="outline"
             onClick={downloadChat}
-            className="p-2 bg-white/80 backdrop-blur-sm hover:bg-white"
+            className="p-2 bg-foreground backdrop-blur-sm hover:bg-background transition-colors"
             title="Download chat as JSON"
           >
             <MdDownload className="w-4 h-4" />
@@ -210,7 +208,7 @@ function Logs() {
             size="sm"
             variant="outline"
             onClick={clearChatLog}
-            className="p-2 bg-white/80 backdrop-blur-sm hover:bg-white hover:text-red-600"
+            className="p-2 bg-foreground backdrop-blur-sm hover:bg-white hover:text-red-600"
             title="Clear chat log"
           >
             <MdClear className="w-4 h-4" />
@@ -218,7 +216,7 @@ function Logs() {
         </div>
       </div>
 
-      <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+      <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-foreground">
         <div className="flex justify-center gap-4">
           <StoryProgressionButton />
           <SummarizeButton />

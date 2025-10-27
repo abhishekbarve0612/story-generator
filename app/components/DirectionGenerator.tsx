@@ -74,7 +74,7 @@ function DirectionGenerator() {
         <label className="text-sm font-medium text-gray-700 mb-1 block">
           Story Direction
         </label>
-        <p className="text-xs text-gray-500 mb-2">
+        <p className="text-xs text-foreground/30 mb-2">
           What happens next? Describe plot developments, events, or story
           progression.
         </p>

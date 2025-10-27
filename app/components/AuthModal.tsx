@@ -50,13 +50,13 @@ export default function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModa
       <div className="max-w-md">
         <Modal.Header>
           <div className="flex items-center gap-3">
-            <MdLock className="w-6 h-6 text-gray-600" />
+            <MdLock className="w-6 h-6 text-foreground/40" />
             <h2 className="text-lg font-bold">Authentication Required</h2>
           </div>
         </Modal.Header>
 
         <Modal.Body>
-          <p className="text-gray-600 mb-6 text-sm">
+          <p className="text-foreground/40 mb-6 text-sm">
             Please enter your secret key to access the application.
           </p>
 
@@ -77,7 +77,7 @@ export default function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModa
               <button
                 type="button"
                 onClick={() => setShowKey(!showKey)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-foreground/40"
               >
                 {showKey ? (
                   <MdVisibilityOff className="w-5 h-5" />
