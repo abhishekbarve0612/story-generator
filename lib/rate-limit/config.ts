@@ -3,7 +3,7 @@ export type StaticPolicy = {
 }
 
 export const DEFAULT_POLICY: StaticPolicy = {
-    capacity: 20
+    capacity: parseInt(process.env.RATE_LIMIT_CAPACITY ?? '15', 10)
 }
 
 export const WHITELIST = new Set<string>([
