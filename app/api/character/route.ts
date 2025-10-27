@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
 import type { Character } from "@/utils/types";
+import { consume, ipFromRequest } from "@/lib/rate-limit/staticBudget";
 
 const CHARACTERS_FILE = path.join(process.cwd(), "data", "characters.json");
 
@@ -44,6 +45,31 @@ export async function POST(request: NextRequest) {
         { error: "Description is required" },
         { status: 400 }
       );
+    }
+
+    const ip = ipFromRequest(request)
+    const consumption = consume(ip)
+
+    const headers = new Headers()
+
+    let limitHeader: string
+    if (consumption.policy === 'unlimited' || consumption.policy === 'bypass') {
+      limitHeader = 'unlimited'
+    } else {
+      limitHeader = `${consumption.policy} ${consumption.remaining}`
+    }
+
+    headers.set('X-RateLimit-Limit', limitHeader)
+    headers.set('X-RateLimit-Remaining', consumption.remaining.toString())
+    headers.set('X-RateLimit-Policy', consumption.policy.toString())
+
+    if (!consumption.allowed) {
+      return new NextResponse(JSON.stringify({
+        error: 'Demo request limit reached',
+      }), {
+        status: 429,
+        headers: headers,
+      })
     }
 
     const result = await generateCharacter(description);
@@ -108,10 +134,14 @@ export async function POST(request: NextRequest) {
           name: extractedName,
           description: description,
         },
+      }, {
+        headers: headers,
       });
     } catch (saveError) {
       console.error("Error saving character:", saveError);
-      return NextResponse.json(result);
+      return NextResponse.json(result, {
+        headers: headers,
+      });
     }
   } catch (error) {
     console.error("error", error);
