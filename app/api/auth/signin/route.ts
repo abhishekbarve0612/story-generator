@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { signToken, signRefreshToken } from "@/utils/jwt";
 import { cookies } from "next/headers";
+import { ipFromRequest } from "@/lib/rate-limit/staticBudget";
+import { OVERRIDES } from "@/lib/rate-limit/config";
 
-const VALID_SECRET_KEY = process.env.AUTH_SECRET_KEY || "my-secret-key-here";
+const AUTH_SECRET_KEY = process.env.AUTH_SECRET_KEY || "";
+const DEMO_SECRET_KEY = process.env.DEMO_SECRET_KEY || "";
+const BYPASS_SECRET_KEY = process.env.BYPASS_SECRET_KEY || "";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,11 +19,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (secretKey !== VALID_SECRET_KEY) {
+    const isDemoKey = secretKey === DEMO_SECRET_KEY
+    const isBypassKey = secretKey === BYPASS_SECRET_KEY
+
+    if (!isDemoKey && !isBypassKey) {
       return NextResponse.json(
         { error: "Invalid secret key" },
         { status: 401 }
       );
+    }
+
+    if (isBypassKey) {
+      const ip = ipFromRequest(request)
+      OVERRIDES.set(ip, 100)
     }
 
     const accessToken = await signToken({ authenticated: true });
@@ -41,6 +53,14 @@ export async function POST(request: NextRequest) {
       maxAge: 7 * 24 * 60 * 60, // 7 days
       path: "/",
     });
+
+    cookieStore.set('rl_mode', isBypassKey ? 'bypass' : 'demo', {
+      httpOnly: false,
+      sameSite: 'strict',
+      maxAge: 30 * 24 * 60 * 60, // 30 days
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+    })
 
     return NextResponse.json({
       success: true,

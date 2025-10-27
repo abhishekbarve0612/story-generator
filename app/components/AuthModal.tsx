@@ -10,7 +10,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) {
-  const [secretKey, setSecretKey] = useState("");
+  const [secretKey, setSecretKey] = useState("Mischief Managed");
   const [showKey, setShowKey] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -51,13 +51,16 @@ export default function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModa
         <Modal.Header>
           <div className="flex items-center gap-3">
             <MdLock className="w-6 h-6 text-foreground/40" />
-            <h2 className="text-lg font-bold">Authentication Required</h2>
+            <h2 className="text-lg font-bold">Enter a secret key</h2>
           </div>
         </Modal.Header>
 
         <Modal.Body>
           <p className="text-foreground/40 mb-6 text-sm">
-            Please enter your secret key to access the application.
+            This is a demo application. Please use the following secret key to access the application: Mischief Managed
+          </p>
+          <p className="text-foreground/40 mb-6 text-sm">
+            It is limited to 15 requests. To bypass the limit, use the provided secret key.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
