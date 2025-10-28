@@ -8,34 +8,6 @@ import { consume, ipFromRequest } from "@/lib/rate-limit/staticBudget";
 
 const CHARACTERS_FILE = path.join(process.cwd(), "data", "characters.json");
 
-// Helper function to extract character name from generated content
-function extractCharacterName(generatedText: string): string {
-  // Look for common patterns like "Name: John", "Character: Sarah", etc.
-  const namePatterns = [
-    /Name:\s*<([^>]+)>/i, // Priority pattern: Name: <....>
-    /Name:\s*([^\n,]+)/i,
-    /Character:\s*([^\n,]+)/i,
-    /^([A-Z][a-zA-Z\s]+)(?:\s*[-–—]|\s*:|\s*is|\s*was)/m,
-    /\*\*Name:\*\*\s*([^\n,]+)/i,
-    /\*\*([A-Z][a-zA-Z\s]+)\*\*/,
-  ];
-
-  for (const pattern of namePatterns) {
-    const match = generatedText.match(pattern);
-    if (match && match[1]) {
-      return match[1].trim();
-    }
-  }
-
-  // If no name found, extract first capitalized word/phrase
-  const firstLineMatch = generatedText.match(/^([A-Z][a-zA-Z\s]{1,30})/);
-  if (firstLineMatch) {
-    return firstLineMatch[1].trim();
-  }
-
-  return "Unnamed Character";
-}
-
 export async function POST(request: NextRequest) {
   try {
     const { description } = await request.json();
@@ -77,7 +49,8 @@ export async function POST(request: NextRequest) {
     // Save the generated character to JSON file
     try {
       const characterId = `char_${Date.now()}`;
-      const extractedName = extractCharacterName(result.text);
+      const parsedProfile = result.parsed;
+      const extractedName = parsedProfile?.name?.trim() || "Unnamed Character";
 
       const character: Character = {
         id: characterId,
@@ -85,6 +58,7 @@ export async function POST(request: NextRequest) {
         description: description,
         generatedProfile: result.text,
         timestamp: Date.now(),
+        structuredProfile: parsedProfile,
       };
 
       let existingData: {
@@ -133,6 +107,7 @@ export async function POST(request: NextRequest) {
           id: characterId,
           name: extractedName,
           description: description,
+          structuredProfile: parsedProfile,
         },
       }, {
         headers: headers,

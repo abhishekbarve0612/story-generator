@@ -71,6 +71,7 @@ function CharacterGenerator() {
           name: data.character.name,
           description: data.character.description,
           generatedProfile: data.text,
+          structuredProfile: data.character.structuredProfile,
           timestamp: Date.now(),
         };
 

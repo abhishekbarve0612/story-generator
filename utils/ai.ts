@@ -6,4 +6,4 @@ const openai = new OpenAI({
 
 export default openai;
 
-export const MODEL_NAME = "gpt-5-nano";
+export const MODEL_NAME = "gpt-4o-mini";

@@ -16,4 +16,22 @@ export interface Character {
   generatedProfile: string;
   timestamp: number;
   tags?: string[];
+  structuredProfile?: CharacterProfile;
+}
+
+export interface CharacterProfile {
+  name: string;
+  basicInformation: string;
+  physicalAppearance: string;
+  personality: string;
+  background: string;
+  motivationsAndGoals: string;
+  relationships: string;
+  skillsAndAbilities: string;
+  potentialStoryRole: string;
+}
+
+export interface ResponseParserMessage {
+  role: "user" | "assistant" | "system";
+  content: string;
 }

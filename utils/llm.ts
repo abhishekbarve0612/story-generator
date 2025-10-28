@@ -1,5 +1,13 @@
+import { z } from "zod";
+import { zodTextFormat } from "openai/helpers/zod";
+
 import openai, { MODEL_NAME } from "./ai";
-import type { AIMessage, AIResponse } from "@/utils/types";
+import type {
+  AIMessage,
+  AIResponse,
+  CharacterProfile,
+  ResponseParserMessage,
+} from "@/utils/types";
 import {
   CHARACTER_GENERATION_PROMPT,
   LORE_GENERATION_PROMPT,
@@ -17,12 +25,20 @@ import type { ChatCompletionMessageParam } from "openai/resources";
 
 export async function generateText(
   messages: AIMessage[],
-  useTools: boolean = false
+  useTools: boolean = false,
+  responseFormat: { schema: any; name: string } | null = null
 ): Promise<AIResponse> {
   const requestParams: any = {
     model: MODEL_NAME,
     messages,
   };
+
+  if (responseFormat) {
+    requestParams.response_format = zodTextFormat(
+      responseFormat.schema,
+      responseFormat.name
+    );
+  }
 
   if (useTools) {
     requestParams.tools = storyTools;
@@ -57,19 +73,110 @@ export async function generateText(
   };
 }
 
+// REF: https://platform.openai.com/docs/guides/structured-outputs#structured-outputs-vs-json-mode
+export async function generateStructuredResponse(
+  messages: ResponseParserMessage[],
+  schema: any,
+  name: string
+) {
+  const response = await openai.responses.parse({
+    model: MODEL_NAME,
+    input: messages.map(message => ({
+      role: message.role,
+      content: message.content,
+    })),
+    text: {
+      format: zodTextFormat(schema, name),
+    },
+  })
+
+  const parsed = response.output_parsed
+
+  if (!parsed) {
+    throw new Error("Failed to parse structured response.")
+  }
+
+  return parsed
+}
+
+const characterProfileSchema = z.object({
+  name: z
+    .string()
+    .min(3)
+    .describe("Full character name that fits the requested setting or genre."),
+  basicInformation: z
+    .string()
+    .min(10)
+    .describe("Key facts such as age, gender (if known), occupation, and role."),
+  physicalAppearance: z
+    .string()
+    .min(10)
+    .describe("Distinctive physical traits, style, and mannerisms."),
+  personality: z
+    .string()
+    .min(10)
+    .describe("Core traits, strengths, weaknesses, and quirks."),
+  background: z
+    .string()
+    .min(10)
+    .describe("Origin story and formative experiences."),
+  motivationsAndGoals: z
+    .string()
+    .min(10)
+    .describe("Immediate motivations and longer-term objectives."),
+  relationships: z
+    .string()
+    .min(10)
+    .describe("Important connections and their dynamics."),
+  skillsAndAbilities: z
+    .string()
+    .min(10)
+    .describe("Relevant talents, skills, or powers."),
+  potentialStoryRole: z
+    .string()
+    .min(10)
+    .describe("How the character can drive or influence a narrative."),
+})
+
+function formatCharacterProfile(profile: CharacterProfile): string {
+  return [
+    `Name: ${profile.name}`,
+    `Basic Information: ${profile.basicInformation}`,
+    `Physical Appearance: ${profile.physicalAppearance}`,
+    `Personality: ${profile.personality}`,
+    `Background: ${profile.background}`,
+    `Motivations & Goals: ${profile.motivationsAndGoals}`,
+    `Relationships: ${profile.relationships}`,
+    `Skills & Abilities: ${profile.skillsAndAbilities}`,
+    `Potential Story Role: ${profile.potentialStoryRole}`,
+  ].join("\n\n")
+}
+
 export async function generateCharacter(
   description: string
-): Promise<AIResponse> {
+): Promise<AIResponse & { parsed: CharacterProfile }> {
   const prompt = `
   Description : ${description}
-  `;
+  `
 
-  const messages: AIMessage[] = [
+  const messages: ResponseParserMessage[] = [
     { role: "system", content: CHARACTER_GENERATION_PROMPT },
     { role: "user", content: prompt },
-  ];
+  ]
 
-  return generateText(messages);
+  const profile = await generateStructuredResponse(
+    messages,
+    characterProfileSchema,
+    "character_profile"
+  )
+
+  const formattedText = formatCharacterProfile(profile);
+
+  return {
+    text: formattedText,
+    role: "assistant",
+    parsed: profile,
+  }
 }
 
 export async function generateLore(description: string): Promise<AIResponse> {
